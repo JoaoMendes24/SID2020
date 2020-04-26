@@ -8,7 +8,7 @@ public class Medicao {
 	private String hora;
 	
 	
-	public Medicao(double valorMedicao, String tipoSensor, String data, String hora) {
+	public Medicao(double valorMedicao, String tipoSensor, String data, String hora) throws Exception {
 		this.tipoSensor = tipoSensor;
 		this.data = data;
 		this.valorMedicao = valorMedicao;
@@ -61,4 +61,82 @@ public class Medicao {
 		return "Medicao [valorMedicao=" + valorMedicao + ", tipoSensor=" + tipoSensor + ", data=" + data + ", hora="
 				+ hora + "]";
 	}
+	
+	
+	// constroi a data formato SQL
+	private String formatarData() {
+		String data = this.data;
+		String result = "";
+		String bonus;
+		
+		String[] vector = data.split("/");
+		
+		result = result + vector[2];
+		result = result + "-";
+		
+		
+		bonus = "";
+		if(vector[1].length() == 1) {
+			bonus = "0";
+		}
+		
+		result = result + bonus + vector[1];
+		result = result + "-";
+		
+		
+		bonus = "";
+		if(vector[0].length() == 1) {
+			bonus = "0";
+		}
+		result = result + bonus + vector[0];
+		
+		return result;
+	}
+	
+	public String getDataFormatada() {
+		String data = formatarData();
+		return data;
+	}
+	
+	
+	// constroi a hora formato SQL
+	private String formatarHora() {
+		String hora = this.hora;
+		String result = "";
+		String bonus;
+		
+		String[] vector = hora.split(":");
+		
+		bonus = "";
+		if(vector[0].length() == 1) {
+			bonus = "0";
+		}
+		result = result + bonus + vector[0] + ":";
+		
+		bonus = "";
+		if(vector[1].length() == 1) {
+			bonus = "0";
+		}
+		result = result + bonus + vector[1] + ":";
+		
+		bonus = "";
+		if(vector[2].length() == 1) {
+			bonus = "0";
+		}
+		result = result + bonus + vector[2];
+		
+		return result;
+	}
+	
+	
+	
+	public String getHoraFormatada() {
+		String hora = formatarHora();
+		return hora;
+	}
+	
+	
+	
+	
+	
 }

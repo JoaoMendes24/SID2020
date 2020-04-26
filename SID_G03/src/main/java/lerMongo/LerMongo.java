@@ -16,7 +16,7 @@ public class LerMongo {
 	private MongoCollection<Document> mongocol;
 	private ArrayList<Medicao> medicoes = new ArrayList<Medicao>();
 
-	public static void main(String[] args) {
+	public static ArrayList<Medicao> start() {
 		LerMongo lermongo = new LerMongo();
 
 		// conecta a mongo
@@ -24,12 +24,8 @@ public class LerMongo {
 
 		// ler dados do mongo
 		lermongo.readData();
-		
-		// Mostra valores guardados
-		for(Medicao m: lermongo.medicoes) {
-			System.out.println(m.toString() + "\n");
-		}
 
+		return lermongo.getMedicoes();
 	}
 
 	private void connectMongo() {
@@ -60,7 +56,7 @@ public class LerMongo {
 			String luz = js.optString("cell");
 			String movimento = js.optString("mov");
 			String tipoSensor = js.optString("sens");
-			
+
 			guardarMedicoes(humidade, temperatura, movimento, luz, tipoSensor, data, hora);
 
 		} catch (
@@ -71,24 +67,25 @@ public class LerMongo {
 		}
 	}
 
-	private void guardarMedicoes(String humidade, String temperatura, String movimento, String luz, String tipoSensor, String data, String hora) throws Exception {
+	private void guardarMedicoes(String humidade, String temperatura, String movimento, String luz, String tipoSensor,
+			String data, String hora) throws Exception {
 		Medicao medicaoHumidade;
 		Medicao medicaoTemperatura;
 		Medicao medicaoLuminosidade;
 		Medicao medicaoMovimento;
-		
+
 		double hum = Double.parseDouble(humidade);
 		double temp = Double.parseDouble(temperatura);
 		double luminosidade = Double.parseDouble(luz);
 		double mov = Double.parseDouble(movimento);
-		
-		//criar medicoes
+
+		// criar medicoes
 		medicaoHumidade = new Medicao(hum, "hum", data, hora);
 		medicaoTemperatura = new Medicao(temp, "tmp", data, hora);
 		medicaoLuminosidade = new Medicao(luminosidade, "luz", data, hora);
-		medicaoMovimento = new Medicao(mov,"mov", data, hora);
-		
-		//adicionar medicoes a ArrayList
+		medicaoMovimento = new Medicao(mov, "mov", data, hora);
+
+		// adicionar medicoes a ArrayList
 		medicoes.add(medicaoHumidade);
 		medicoes.add(medicaoMovimento);
 		medicoes.add(medicaoTemperatura);
