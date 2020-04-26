@@ -16,7 +16,7 @@ public class EscreverSQL {
 		EscreverSQL escreverSQL = new EscreverSQL();
 		escreverSQL.medicoes = medicoes;
 
-		// 1. Ligar base de dados MySQLMain
+		// 1.  Ligar base de dados MySQLMain
 		try {
 			escreverSQL.connectToMYSQL();
 		} catch (Exception e) {
