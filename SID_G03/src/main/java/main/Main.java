@@ -1,27 +1,17 @@
 package main;
 
-import escreverNoSQL.ThreadEscreverSQL;
-import lerDoMongo.ThreadLerMongo;
-import lerSensores.ThreadLerSensores;
-import recursosPartilhadosThreads.Medicoes;
-import recursosPartilhadosThreads.MongoDataBase;
+import baseDadosMongo.BaseDadosMongo;
+import escutarMongo.EscutarMongo;
+import inserirNoSQL.InserirSQL;
+
 
 public class Main {
 
 	public static void main(String[] args) {
-		
-		
-		MongoDataBase mongodb = new MongoDataBase();
-		Medicoes medicoes = new Medicoes();
-		
-		//1. Ler Sensores
-		new ThreadLerSensores(mongodb).start();
-	
-		
-		//2. Ler Mongo
-		new ThreadLerMongo(mongodb,medicoes).start();
-		
-		//3.Escrever na bd museumain
-		new ThreadEscreverSQL(medicoes).start();
+		try {
+			new EscutarMongo(new BaseDadosMongo(), new InserirSQL());
+		} catch (Exception e) {
+			System.out.println("Erro: Main");
+		}	
 	}
 }
