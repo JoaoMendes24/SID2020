@@ -44,45 +44,34 @@ public class InserirSQL {
 	}
 
 	public void validarInserirSQL(JSONObject json) {
-		String humidade = null, temperatura = null, luz = null, movimento = null;
-	
-		try {
-			humidade = json.optString("hum");
-		} catch (Exception e) {}
 
-		try {
-			temperatura = json.optString("tmp");
-		} catch (Exception e) {}
-
-		try {
-			luz = json.optString("cell");
-		} catch (Exception e) {}
-
-		try {
-			movimento = json.optString("mov");
-		} catch (Exception e) {}
-
+		String humidade = json.optString("hum");
+		String temperatura = json.optString("tmp");
+		String luz = json.optString("cell");
+		String movimento = json.optString("mov");
 		String data = json.optString("dat");
 		String hora = json.optString("tim");
+		
+		try {
+			String[] datavector = data.split("/");
+			data = datavector[2] + "-" + datavector[1] + "-" + datavector[0];
+		} catch (Exception e) {}
 
-		String[] datavector = data.split("/");
-		data = datavector[2] + "-" + datavector[1] + "-" + datavector[0];
-		
 		String dataHora = "'" + data + " " + hora + "'";
-		
+
 		executarQuery(humidade, "'" + "hum" + "'", dataHora);
 		executarQuery(temperatura, "'" + "tmp" + "'", dataHora);
 		executarQuery(movimento, "'" + "mov" + "'", dataHora);
 		executarQuery(luz, "'" + "luz" + "'", dataHora);
-
 	}
-	
-	public void executarQuery(String valor, String tipo, String dataHora){
+
+	public void executarQuery(String valor, String tipo, String dataHora) {
 		try {
-			myStatement.executeUpdate(
-					"insert into medicoessensores values(" + "0" + "," + Double.parseDouble(valor) + "," + tipo + "," + dataHora + ")");
-			
+			myStatement.executeUpdate("insert into medicoessensores values(" + "0" + "," + Double.parseDouble(valor)
+					+ "," + tipo + "," + dataHora + ")");
+
 			System.out.println("Medicao Inserida no SQL com sucesso!\n" + valor + " " + tipo + " " + dataHora);
-		} catch (Exception e) {}
+		} catch (Exception e) {
+		}
 	}
 }
