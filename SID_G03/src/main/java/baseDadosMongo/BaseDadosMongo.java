@@ -3,10 +3,10 @@ package baseDadosMongo;
 import java.io.FileInputStream;
 import java.util.Properties;
 import org.bson.Document;
-
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.CreateCollectionOptions;
 
 public class BaseDadosMongo {
 
@@ -33,12 +33,20 @@ public class BaseDadosMongo {
 	}
 
 	public void estabelecerLigacao(MongoClient client) {
-		db = client.getDatabase(mongo_database);
-		collection = db.getCollection(mongo_collection);
+		this.db = client.getDatabase(mongo_database);
+
+		try {
+			CreateCollectionOptions options = new CreateCollectionOptions();
+			options.capped(true);
+			options.sizeInBytes(2000000000l);
+			this.db.createCollection(mongo_collection, options);
+			this.collection = db.getCollection(mongo_collection);
+		} catch (Exception e) {
+			this.collection = db.getCollection(mongo_collection);
+		}
 	}
 
 	public MongoCollection<Document> getCollection() {
 		return collection;
 	}
-
 }
