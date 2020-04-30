@@ -36,14 +36,9 @@ public class EscutarMongo {
 		try {
 			MongoCollection<Document> mongocol = this.mongodb.getCollection();
 			MongoCursor<Document> cursor = mongocol.find().cursorType(CursorType.TailableAwait).iterator();
-			
-			ignorarDocumentosJaExistentesNoMongo(cursor,mongocol);
-		
-			while (true) {
-				while (cursor.hasNext()) {
-					this.inserirSQL.escreverNoSQL(cursor.next().toJson());
-				}
-				Thread.sleep(2000);
+			ignorarDocumentosJaExistentesNoMongo(cursor, mongocol);
+			while (cursor.hasNext()) {
+				this.inserirSQL.escreverNoSQL(cursor.next().toJson());
 			}
 		} catch (Exception e) {
 			System.out.println("Erro: Escutar Mongo");
@@ -52,10 +47,8 @@ public class EscutarMongo {
 
 	private void ignorarDocumentosJaExistentesNoMongo(MongoCursor<Document> cursor, MongoCollection<Document> mongocol) throws Exception {
 		long numeroDocumentosExistentes = mongocol.countDocuments();
-		while(cursor.hasNext()) {
-			for (long i = 0; i < numeroDocumentosExistentes; i++) {
-				cursor.next();
-			}
+		for (long i = 0; i < numeroDocumentosExistentes; i++) {
+			cursor.next();
 		}
 	}
 }
