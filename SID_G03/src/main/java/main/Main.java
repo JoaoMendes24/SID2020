@@ -4,7 +4,6 @@ import baseDadosMongo.BaseDadosMongo;
 import escutarMongo.EscutarMongo;
 import inserirNoSQL.InserirSQL;
 
-
 public class Main {
 
 	public static void main(String[] args) {

@@ -3,7 +3,6 @@ package inserirNoSQL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
-
 import org.json.JSONObject;
 
 public class InserirSQL {
@@ -23,19 +22,16 @@ public class InserirSQL {
 	public void escreverNoSQL(String json) {
 		try {
 			enviarMedicoesParaSQL(new JSONObject(json));
-			System.out.println("Envio para a base de dados MySQL com sucesso!");
 		} catch (Exception e) {}
 	}
 
 	public void enviarMedicoesParaSQL(JSONObject json) {
-	
 		String humidade = json.optString("hum");
 		String temperatura = json.optString("tmp");
 		String luz = json.optString("cell");
 		String movimento = json.optString("mov");
 		String data = json.optString("dat");
 		String hora = json.optString("tim");
-		
 		try {
 			String[] datavector = data.split("/");
 			data = datavector[2] + "-" + datavector[1] + "-" + datavector[0];
