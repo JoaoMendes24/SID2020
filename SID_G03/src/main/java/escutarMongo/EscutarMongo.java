@@ -4,7 +4,6 @@ import org.bson.Document;
 import com.mongodb.CursorType;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
-import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import baseDadosMongo.BaseDadosMongo;
@@ -36,25 +35,27 @@ public class EscutarMongo {
 	public void escutar() {
 		try {
 			MongoCollection<Document> mongocol = this.mongodb.getCollection();
-			long numeroDocumentos = mongocol.count();
-			boolean firstRun = true; // firstRun verifica se é a primeira vez que o java é corrido
-			FindIterable<Document> iterable = mongocol.find().cursorType(CursorType.TailableAwait);
-			MongoCursor<Document> cursor = iterable.iterator();
+			MongoCursor<Document> cursor = mongocol.find().cursorType(CursorType.TailableAwait).iterator();
+			
+			ignorarDocumentosJaExistentesNoMongo(cursor,mongocol);
+		
 			while (true) {
-				if (cursor.hasNext()) {
-					if (firstRun) {
-						for (long i = 0; i < numeroDocumentos; i++) {
-							cursor.next();
-						}
-						firstRun = false;
-					} else {
-						this.inserirSQL.escreverNoSQL(cursor.next().toJson());
-					}
+				while (cursor.hasNext()) {
+					this.inserirSQL.escreverNoSQL(cursor.next().toJson());
 				}
 				Thread.sleep(2000);
 			}
 		} catch (Exception e) {
-			System.out.println("Erro ao escutar Mongo.");
+			System.out.println("Erro: Escutar Mongo");
+		}
+	}
+
+	private void ignorarDocumentosJaExistentesNoMongo(MongoCursor<Document> cursor, MongoCollection<Document> mongocol) throws Exception {
+		long numeroDocumentosExistentes = mongocol.countDocuments();
+		while(cursor.hasNext()) {
+			for (long i = 0; i < numeroDocumentosExistentes; i++) {
+				cursor.next();
+			}
 		}
 	}
 }

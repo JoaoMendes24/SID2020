@@ -2,8 +2,8 @@ package inserirNoSQL;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.sql.Statement;
+
 import org.json.JSONObject;
 
 public class InserirSQL {
@@ -12,39 +12,23 @@ public class InserirSQL {
 	private Statement myStatement;
 
 	public InserirSQL() {
-		// 1. Ligar base de dados MySQLMain
 		try {
-			connectToMYSQL();
+			myConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/museumain", "root", "");
+			myStatement = this.myConnection.createStatement();
 		} catch (Exception e) {
-			System.out.println("Erro dos brutos na ligação a museumain");
-		}
-
-		// 2. Criar um Statement SQL
-		try {
-			createStatement();
-		} catch (Exception e) {
-			System.out.println("Erro dos brutos na criação do statement!");
-		}
-	}
-
-	private void connectToMYSQL() throws Exception {
-		myConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/museumain", "root", "");
-	}
-
-	private void createStatement() throws SQLException {
-		myStatement = this.myConnection.createStatement();
+			System.out.println("Erro InserirSQL");
+		}	
 	}
 
 	public void escreverNoSQL(String json) {
 		try {
-			validarInserirSQL(new JSONObject(json));
-		} catch (Exception e) {
-			System.out.println("Erro: Medicao Inválida.");
-		}
+			enviarMedicoesParaSQL(new JSONObject(json));
+			System.out.println("Envio para a base de dados MySQL com sucesso!");
+		} catch (Exception e) {}
 	}
 
-	public void validarInserirSQL(JSONObject json) {
-
+	public void enviarMedicoesParaSQL(JSONObject json) {
+	
 		String humidade = json.optString("hum");
 		String temperatura = json.optString("tmp");
 		String luz = json.optString("cell");
@@ -58,20 +42,17 @@ public class InserirSQL {
 		} catch (Exception e) {}
 
 		String dataHora = "'" + data + " " + hora + "'";
-
-		executarQuery(humidade, "'" + "hum" + "'", dataHora);
-		executarQuery(temperatura, "'" + "tmp" + "'", dataHora);
-		executarQuery(movimento, "'" + "mov" + "'", dataHora);
-		executarQuery(luz, "'" + "luz" + "'", dataHora);
+		
+		inserirMedicaoNoSQL(humidade, "'" + "hum" + "'", dataHora);
+		inserirMedicaoNoSQL(temperatura, "'" + "tmp" + "'", dataHora);
+		inserirMedicaoNoSQL(movimento, "'" + "mov" + "'", dataHora);
+		inserirMedicaoNoSQL(luz, "'" + "luz" + "'", dataHora);
 	}
 
-	public void executarQuery(String valor, String tipo, String dataHora) {
+	public void inserirMedicaoNoSQL(String valor, String tipo, String dataHora) {
 		try {
 			myStatement.executeUpdate("insert into medicoessensores values(" + "0" + "," + Double.parseDouble(valor)
 					+ "," + tipo + "," + dataHora + ")");
-
-			System.out.println("Medicao Inserida no SQL com sucesso!\n" + valor + " " + tipo + " " + dataHora);
-		} catch (Exception e) {
-		}
+		} catch (Exception e) {}
 	}
 }

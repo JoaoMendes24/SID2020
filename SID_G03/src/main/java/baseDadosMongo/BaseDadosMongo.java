@@ -28,13 +28,8 @@ public class BaseDadosMongo {
 		}
 	}
 
-	public String getMongo_host() {
-		return mongo_host;
-	}
-
 	public void estabelecerLigacao(MongoClient client) {
 		this.db = client.getDatabase(mongo_database);
-
 		try {
 			CreateCollectionOptions options = new CreateCollectionOptions();
 			options.capped(true);
@@ -46,6 +41,10 @@ public class BaseDadosMongo {
 		}
 	}
 
+	public String getMongo_host() {
+		return mongo_host;
+	}
+	
 	public MongoCollection<Document> getCollection() {
 		return collection;
 	}
