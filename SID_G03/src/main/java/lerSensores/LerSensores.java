@@ -29,7 +29,7 @@ public class LerSensores implements MqttCallback {
 	public static void main(String[] args) {
 		try {
 			Properties p = new Properties();
-			p.load(new FileInputStream("src/main/java/lersensores/CloudToMongo.ini"));
+			p.load(new FileInputStream("src/main/java/lerSensores/CloudToMongo.ini"));
 			cloud_server = p.getProperty("cloud_server");
 			cloud_topic = p.getProperty("cloud_topic");
 			mongo_host = p.getProperty("mongo_host");
