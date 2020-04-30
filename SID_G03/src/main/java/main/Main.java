@@ -1,16 +1,16 @@
 package main;
 
-import java.util.ArrayList;
-
-import jdbc.EscreverSQL;
-import lerMongo.LerMongo;
-import lerMongo.Medicao;
+import baseDadosMongo.BaseDadosMongo;
+import escutarMongo.EscutarMongo;
+import inserirNoSQL.InserirSQL;
 
 public class Main {
 
 	public static void main(String[] args) {
-		ArrayList<Medicao> medicoes = LerMongo.start();
-		EscreverSQL.start(medicoes);
+		try {
+			new EscutarMongo(new BaseDadosMongo(), new InserirSQL());
+		} catch (Exception e) {
+			System.out.println("Erro: Main");
+		}	
 	}
-
 }
