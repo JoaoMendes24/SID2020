@@ -82,7 +82,7 @@ public class LerSensores implements MqttCallback {
 		String payload = new String(message.getPayload());
 
 		// limpar os erros dos sensores do professor
-		payload = limparErros(payload);
+		//payload = limparErros(payload);
 
 		try {
 			JSONObject jsonmsg = new JSONObject(payload);
