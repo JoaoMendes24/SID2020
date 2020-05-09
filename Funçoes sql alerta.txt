@@ -40,3 +40,14 @@ BEGIN
 	end if;
 RETURN p_existeRonda;
 END
+
+funçao numeroMedicoes
+
+CREATE DEFINER=`root`@`localhost` FUNCTION `numeroMedicoes`(limite decimal) RETURNS int(11)
+BEGIN
+	declare n int;
+	Select COUNT(*) from (SELECT * FROM medicoessensores where TipoSensor='luz'
+	ORDER BY IDmedicao DESC LIMIT 3) as Table2 where Table2.ValorMedicao>limite and 
+    existeRonda(Table2.DataHoraMedicao) is false into n;
+RETURN n;
+END
