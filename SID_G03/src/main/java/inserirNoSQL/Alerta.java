@@ -22,7 +22,7 @@ public class Alerta {
 		this.myStatement=myStatement;
 	}
 
-	public void verificarMediçaoTemperatura(JSONObject json) throws SQLException{
+	public void verificarMedicaoTemperatura(JSONObject json) throws SQLException{
 		String temperatura = json.optString("tmp");
 		String data = json.optString("dat");
 		String hora = json.optString("tim");
@@ -57,7 +57,7 @@ public class Alerta {
 		if (upCounterLim == 10) {
 			upCounterLim = 0;
 			myStatement.executeUpdate("insert into alerta" + " values(0" + "," + dataHora + ",'tmp'," + tmpAtual + ","
-					+ tmpLimite + ",'O sistema detetou que a temperatura está acima do limite',true,'')");
+					+ tmpLimite + ",'O sistema detetou que a temperatura estÃ¡ acima do limite',true,'')");
 			acimaLim=true;
 		}
 		if(acimaLim && tmpAtual>tmpLimite)

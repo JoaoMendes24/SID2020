@@ -29,7 +29,7 @@ public class InserirSQL {
 	public void escreverNoSQL(String json) {
 		try {
 			enviarMedicoesParaSQL(new JSONObject(json));
-			alerta.verificarMediçaoTemperatura(new JSONObject(json));
+			alerta.verificarMedicaoTemperatura(new JSONObject(json));
 		} catch (Exception e) {
 		}
 	}

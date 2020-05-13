@@ -7,6 +7,10 @@ import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONObject;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.github.fge.jsonschema.core.exceptions.ProcessingException;
+import com.github.fge.jsonschema.main.JsonSchema;
 import com.mongodb.*;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -20,11 +24,13 @@ public class LerSensores implements MqttCallback {
 	static MongoClient mongoClient;
 	static MongoDatabase db;
 	static MongoCollection<Document> mongocol;
+	static MongoCollection<Document> dumpcol;
 	static String cloud_server = new String();
 	static String cloud_topic = new String();
 	static String mongo_host = new String();
 	static String mongo_database = new String();
-	static String mongo_collection = new String();
+	static String data_collection = new String();
+	static String dump_collection = new String();
 
 	public static void main(String[] args) {
 		try {
@@ -34,7 +40,8 @@ public class LerSensores implements MqttCallback {
 			cloud_topic = p.getProperty("cloud_topic");
 			mongo_host = p.getProperty("mongo_host");
 			mongo_database = p.getProperty("mongo_database");
-			mongo_collection = p.getProperty("mongo_collection");
+			data_collection = p.getProperty("data_collection");
+			dump_collection = p.getProperty("dump_collection");
 			new LerSensores().connecCloud();
 			new LerSensores().connectMongo();
 		} catch (Exception e) {
@@ -59,21 +66,22 @@ public class LerSensores implements MqttCallback {
 		try {
 			mongoClient = new MongoClient(new MongoClientURI(mongo_host));
 			db = mongoClient.getDatabase(mongo_database);
-			getColeccao();
+			getColeccoes();
 		} catch (Exception e) {
 			System.out.println("Erro: Coneccao Mongo");
 		}
 	}
 
-	private void getColeccao() {
+	private void getColeccoes() {
 		try {
 			CreateCollectionOptions options = new CreateCollectionOptions();
 			options.capped(true);
 			options.sizeInBytes(2000000000l);
-			db.createCollection(mongo_collection, options);
-			mongocol = db.getCollection(mongo_collection);
+			db.createCollection(data_collection, options);
+			dumpcol = db.getCollection(dump_collection);
+			mongocol = db.getCollection(data_collection);
 		} catch (Exception e) {
-			mongocol = db.getCollection(mongo_collection);
+			mongocol = db.getCollection(data_collection);
 		}
 	}
 
@@ -87,10 +95,38 @@ public class LerSensores implements MqttCallback {
 		try {
 			JSONObject jsonmsg = new JSONObject(payload);
 			Document doc = Document.parse(jsonmsg.toString());
-			mongocol.insertOne(doc);
+			if(valido(jsonmsg)) {
+				mongocol.insertOne(doc);
+			}
+			else {
+				dumpcol.insertOne(doc);
+			}
 			System.out.println(doc);
 		} catch (Exception e) {}
 	}
+	
+	public boolean valido(JSONObject json) throws ProcessingException {
+		JsonNode msg = null;
+		JsonSchema schema = null;
+		File schemaFile = new File("src/main/java/lerSensores/schema.json");
+		try {
+			msg = ValidationUtils.getJsonNode(json.toString());
+			schema = ValidationUtils.getSchemaNode(schemaFile);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		
+		return ValidationUtils.isJsonValid(schema, msg);
+	
+	}
+	
+
 
 	public String limparErros(String payload) {
 		String old = '"' + "mov" + '"' + ':' + '"' + "0" + '"';
@@ -103,6 +139,8 @@ public class LerSensores implements MqttCallback {
 
 	public void connectionLost(Throwable cause) {
 	}
+	
+	
 
 	public void deliveryComplete(IMqttDeliveryToken token) {
 	}
