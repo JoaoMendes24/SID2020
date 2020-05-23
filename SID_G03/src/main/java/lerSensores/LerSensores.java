@@ -16,6 +16,8 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.CreateCollectionOptions;
 
+import main.Main;
+
 import java.util.*;
 import java.io.*;
 
@@ -35,7 +37,7 @@ public class LerSensores implements MqttCallback {
 	public static void main(String[] args) {
 		try {
 			Properties p = new Properties();
-			p.load(new FileInputStream("src/main/java/lerSensores/CloudToMongo.ini"));
+			p.load(new FileInputStream(Main.CONFIG_INI_PATH + "CloudToMongo.ini"));
 			cloud_server = p.getProperty("cloud_server");
 			cloud_topic = p.getProperty("cloud_topic");
 			mongo_host = p.getProperty("mongo_host");
