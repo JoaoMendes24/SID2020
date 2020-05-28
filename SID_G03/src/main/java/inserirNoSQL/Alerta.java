@@ -56,6 +56,8 @@ public class Alerta {
 		rs.absolute(1);
 		tmpLimite = rs.getDouble("LimiteTemperatura");
 		enviarAlerta();
+		System.out.println("buffer -> "+buffer);
+		System.out.println("medicoes -> "+medicoes);
 
 	}
 
@@ -76,15 +78,19 @@ public class Alerta {
 
 	public void enviarAlertaSubidaTemperatura() throws SQLException {
 		if (estado == EstadoSistema.ESTAVEL) {
+			System.out.println("entrei no primeiro if");
 			double diferenca_temp = 0;
 			if (medicoes.size() == MEDICOES_SIZE) {
-				diferenca_temp = medicoes.get(0).getValor() - medicoes.peekLast().getValor();
+				System.out.println("entrei no segundo if");
+				diferenca_temp = medicoes.peekLast().getValor() - medicoes.get(0).getValor();
 				if (diferenca_temp >= DELTA_MEDICOES) {
+					System.out.println("entrei no 3 if");
 					estado = EstadoSistema.SUBIDA;
 					myStatement.executeUpdate("insert into alerta" + " values(0" + ","
 							+ medicoes.peekLast().getDataHora() + ",'tmp'," + medicoes.peekLast().getValor() + ","
 							+ tmpLimite + ",'O sistema detetou que " + "houve uma subida da temperatura',"
-							+ estado.getNivel() + "," + estado.getTitulo() + ")");
+							+ estado.getNivel() + ", '" + estado.getTitulo() + "')");
+					System.out.println("enviou alerta subida");
 				}
 			}
 		}
@@ -92,15 +98,14 @@ public class Alerta {
 
 	public void enviarAlertaPertoLimite() throws SQLException {
 		if (estado == EstadoSistema.ESTAVEL || estado == EstadoSistema.SUBIDA) {
-			for (MedicaoTemperatura m : medicoes) {
-				if (m.getValor() >= tmpLimite - 10) {
+				if (medicoes.peekLast().getValor() >= tmpLimite - 10) {
 					estado = EstadoSistema.PERTO_LIMITE;
 					myStatement.executeUpdate(
-							"insert into alerta" + " values(0" + "," + m.getDataHora() + ",'tmp'," + m.getValor() + ","
+							"insert into alerta" + " values(0" + "," + medicoes.peekLast().getDataHora() + ",'tmp'," + medicoes.peekLast().getValor() + ","
 									+ tmpLimite + ",'O sistema detetou que " + "a temperatura está perto do limite',"
-									+ estado.getNivel() + "," + estado.getTitulo() + ")");
-					break;
-				}
+									+ estado.getNivel() + ", '" + estado.getTitulo() + "')");
+					System.out.println("enviou alerta perto limite");
+				
 			}
 		}
 	}
@@ -109,46 +114,45 @@ public class Alerta {
 		if(estado == EstadoSistema.ACIMA_LIMITE)
 			contador++;
 		if (estado == EstadoSistema.PERTO_LIMITE || contador==MEDICOES_ACIMA_LIMITE) {
-			for (MedicaoTemperatura m : medicoes) {
-				if (m.getValor() > tmpLimite) {
+				if (medicoes.peekLast().getValor() > tmpLimite) {
 					estado = EstadoSistema.ACIMA_LIMITE;
 					myStatement.executeUpdate(
-							"insert into alerta" + " values(0" + "," + m.getDataHora() + ",'tmp'," + m.getValor() + ","
+							"insert into alerta" + " values(0" + "," + medicoes.peekLast().getDataHora() + ",'tmp'," + medicoes.peekLast().getValor() + ","
 									+ tmpLimite + ",'O sistema detetou que " + "a temperatura está acima do limite',"
-									+ estado.getNivel() + "," + estado.getTitulo() + ")");
-					break;
-				}
+									+ estado.getNivel() + ", '" + estado.getTitulo() + "')");
+					contador=0;
+					System.out.println("enviou alerta acima limite");
 			}
 		}
 	}
 	
 	public void enviarAlertaDescidaLimite() throws SQLException {
 		if(estado == EstadoSistema.ACIMA_LIMITE)
-			for (MedicaoTemperatura m : medicoes) {
-				if (m.getValor() < tmpLimite) {
+				if (medicoes.peekLast().getValor() < tmpLimite) {
 					estado = EstadoSistema.PERTO_LIMITE;
 					myStatement.executeUpdate(
-							"insert into alerta" + " values(0" + "," + m.getDataHora() + ",'tmp'," + m.getValor() + ","
+							"insert into alerta" + " values(0" + "," + medicoes.peekLast().getDataHora() + ",'tmp'," + medicoes.peekLast().getValor() + ","
 									+ tmpLimite + ",'O sistema detetou que a temperatura está abaixo mas perto do limite',"
-									+ estado.getNivel() + "," + estado.getTitulo() + ")");
+									+ estado.getNivel() + ", '" + estado.getTitulo() + "')");
 					contador=0;
-					break;
-				}
+					System.out.println("enviou alerta descida limite dps de tar acima");
+					
 			}
 		if (estado == EstadoSistema.PERTO_LIMITE) {
-			for (MedicaoTemperatura m : medicoes) {
-				if (m.getValor() < tmpLimite-10) {
+				if (medicoes.peekLast().getValor() < tmpLimite-10) {
 					estado = EstadoSistema.ESTAVEL;
 					myStatement.executeUpdate(
-							"insert into alerta" + " values(0" + "," + m.getDataHora() + ",'tmp'," + m.getValor() + ","
+							"insert into alerta" + " values(0" + "," + medicoes.peekLast().getDataHora() + ",'tmp'," + medicoes.peekLast().getValor() + ","
 									+ tmpLimite + ",'O sistema detetou que a temperatura voltou ao normal',"
-									+ estado.getNivel() + "," + estado.getTitulo() + ")");
-				}
+									+ estado.getNivel() + ", '" + estado.getTitulo() + "')");
+					contador=0;
+					System.out.println("enviou alerta descida perto limite");
 			}
 		}
 	}
 
 	public void enviarAlerta() throws SQLException {
+		System.out.println("entrei na funçao enviar alerta");
 		enviarAlertaSubidaTemperatura();
 		enviarAlertaPertoLimite();
 		enviarAlertaAcimaLimite();

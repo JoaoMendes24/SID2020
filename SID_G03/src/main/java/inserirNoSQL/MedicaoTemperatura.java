@@ -16,5 +16,10 @@ public class MedicaoTemperatura {
 		return dataHora;
 	}
 	
+	public String toString() {
+		return ""+valor+"";
+		
+	}
+	
 	
 }
