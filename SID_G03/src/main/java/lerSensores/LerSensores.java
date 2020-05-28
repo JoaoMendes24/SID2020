@@ -8,9 +8,6 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONObject;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.github.fge.jsonschema.core.exceptions.ProcessingException;
-import com.github.fge.jsonschema.main.JsonSchema;
 import com.mongodb.*;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -88,7 +85,6 @@ public class LerSensores implements MqttCallback {
 	}
 
 	public void messageArrived(String topic, MqttMessage message) throws Exception {
-
 		String payload = new String(message.getPayload());
 
 		// limpar os erros dos sensores do professor
@@ -97,36 +93,21 @@ public class LerSensores implements MqttCallback {
 		try {
 			JSONObject jsonmsg = new JSONObject(payload);
 			Document doc = Document.parse(jsonmsg.toString());
-			if(valido(jsonmsg)) {
-				mongocol.insertOne(doc);
-			}
-			else {
-				dumpcol.insertOne(doc);
-			}
-			System.out.println(doc);
+			Filtrar filtro = new Filtrar(mongocol,dumpcol,jsonmsg);
+			filtro.executar();
+//			System.out.println(doc);
+//			System.out.println(valido(jsonmsg));
+//			if(valido(jsonmsg)) {
+//				mongocol.insertOne(doc);
+//			}
+//			else {
+//				dumpcol.insertOne(doc);
+//			}
+//			System.out.println(doc);
 		} catch (Exception e) {}
 	}
 	
-	public boolean valido(JSONObject json) throws ProcessingException {
-		JsonNode msg = null;
-		JsonSchema schema = null;
-		File schemaFile = new File("src/main/java/lerSensores/schema.json");
-		try {
-			msg = ValidationUtils.getJsonNode(json.toString());
-			schema = ValidationUtils.getSchemaNode(schemaFile);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
-		
-		return ValidationUtils.isJsonValid(schema, msg);
-	
-	}
+
 	
 
 
