@@ -11,6 +11,8 @@ import org.json.JSONObject;
 
 public class InserirSQL {
 
+	private static String USERNAME = "migMongoSql";
+	private static String PASSWORD = "migrador";
 	private Connection myConnection;
 	private Statement myStatement;
 	private Alerta alerta;
@@ -18,19 +20,21 @@ public class InserirSQL {
 
 	public InserirSQL() {
 		try {
-			myConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/museu2", "root", "");
+			myConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/museu2", USERNAME, PASSWORD);
 			myStatement = this.myConnection.createStatement();
 			alerta=new Alerta(myStatement);
 		} catch (Exception e) {
 			System.out.println("Erro InserirSQL");
+			e.printStackTrace();
 		}
 	}
 
 	public void escreverNoSQL(String json) {
 		try {
 			enviarMedicoesParaSQL(new JSONObject(json));
-			alerta.verificarMediçaoTemperatura(new JSONObject(json));
+			alerta.verificarMedicaoTemperatura(new JSONObject(json));
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -45,6 +49,7 @@ public class InserirSQL {
 			String[] datavector = data.split("/");
 			data = datavector[2] + "-" + datavector[1] + "-" + datavector[0];
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 		String dataHora = "'" + data + " " + hora + "'";
@@ -59,6 +64,7 @@ public class InserirSQL {
 			myStatement.executeUpdate("insert into medicoessensores values(" + "0" + "," + Double.parseDouble(valor)
 					+ "," + tipo + "," + dataHora + ")");
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 

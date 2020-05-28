@@ -5,6 +5,8 @@ import escutarMongo.EscutarMongo;
 import inserirNoSQL.InserirSQL;
 
 public class Main {
+	
+	public static String CONFIG_INI_PATH = "config_iniFiles/";
 
 	public static void main(String[] args) {
 		try {

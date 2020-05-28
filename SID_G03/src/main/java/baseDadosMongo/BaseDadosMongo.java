@@ -8,6 +8,8 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.CreateCollectionOptions;
 
+import main.Main;
+
 public class BaseDadosMongo {
 
 	private MongoCollection<Document> collection;
@@ -19,7 +21,7 @@ public class BaseDadosMongo {
 	public BaseDadosMongo() {
 		try {
 			Properties p = new Properties();
-			p.load(new FileInputStream("mongodb.ini/mongodb.ini"));
+			p.load(new FileInputStream(Main.CONFIG_INI_PATH + "mongodb.ini"));
 			mongo_host = p.getProperty("mongo_host");
 			mongo_database = p.getProperty("mongo_database");
 			mongo_collection = p.getProperty("mongo_collection");

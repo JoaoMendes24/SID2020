@@ -29,7 +29,9 @@ public class Alerta {
 		estado = EstadoSistema.ESTAVEL;
 	}
 
-	public void verificarMediçaoTemperatura(JSONObject json) throws SQLException {
+
+
+	public void verificarMedicaoTemperatura(JSONObject json) throws SQLException{
 		String temperatura = json.optString("tmp");
 		String data = json.optString("dat");
 		String hora = json.optString("tim");
@@ -105,9 +107,8 @@ public class Alerta {
 									+ tmpLimite + ",'O sistema detetou que " + "a temperatura está perto do limite',"
 									+ estado.getNivel() + ", '" + estado.getTitulo() + "')");
 					System.out.println("enviou alerta perto limite");
-				
-			}
-		}
+				}
+		}				
 	}
 
 	public void enviarAlertaAcimaLimite() throws SQLException {

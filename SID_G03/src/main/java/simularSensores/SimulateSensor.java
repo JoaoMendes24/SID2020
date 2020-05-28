@@ -2,6 +2,9 @@ package simularSensores;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+
+import main.Main;
+
 import java.time.format.DateTimeFormatter;
 import java.time.LocalTime;
 import java.time.LocalDate;
@@ -27,7 +30,7 @@ public class SimulateSensor implements MqttCallback
     public static void main(final String[] array) {
         try {
             final Properties properties = new Properties();
-            properties.load(new FileInputStream("src/main/java/simularSensores/SimulateSensor.ini"));
+            properties.load(new FileInputStream(Main.CONFIG_INI_PATH + "SimulateSensor.ini"));
             SimulateSensor.cloud_server = properties.getProperty("cloud_server");
             SimulateSensor.cloud_topic = properties.getProperty("cloud_topic");
         }
