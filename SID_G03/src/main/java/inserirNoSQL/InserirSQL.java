@@ -15,14 +15,16 @@ public class InserirSQL {
 	private static String PASSWORD = "migrador";
 	private Connection myConnection;
 	private Statement myStatement;
-	private Alerta alerta;
+	private AlertaTemperatura alertaTemperatura;
+	private AlertaHumidade alertaHumidade;
 	
 
 	public InserirSQL() {
 		try {
 			myConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/museu2", USERNAME, PASSWORD);
 			myStatement = this.myConnection.createStatement();
-			alerta=new Alerta(myStatement);
+			alertaTemperatura=new AlertaTemperatura(myStatement);
+			alertaHumidade=new AlertaHumidade(myStatement);
 		} catch (Exception e) {
 			System.out.println("Erro InserirSQL");
 			e.printStackTrace();
@@ -32,7 +34,8 @@ public class InserirSQL {
 	public void escreverNoSQL(String json) {
 		try {
 			enviarMedicoesParaSQL(new JSONObject(json));
-			alerta.verificarMedicaoTemperatura(new JSONObject(json));
+			alertaTemperatura.verificarMedicaoTemperatura(new JSONObject(json));
+			alertaHumidade.verificarMedicaoHumidade(new JSONObject(json));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

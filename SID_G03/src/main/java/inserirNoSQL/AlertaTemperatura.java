@@ -8,12 +8,12 @@ import java.util.LinkedList;
 
 import org.json.JSONObject;
 
-public class Alerta {
+public class AlertaTemperatura {
 
 	private Statement myStatement;
 	private EstadoSistema estado;
-	private LinkedList<MedicaoTemperatura> buffer = new LinkedList<MedicaoTemperatura>();
-	private LinkedList<MedicaoTemperatura> medicoes = new LinkedList<MedicaoTemperatura>();
+	private LinkedList<Medicao> buffer = new LinkedList<Medicao>();
+	private LinkedList<Medicao> medicoes = new LinkedList<Medicao>();
 	private double medicao;
 	private int contador;
 	private double tmpLimite;
@@ -24,7 +24,7 @@ public class Alerta {
 	public static final int MEDICOES_ACIMA_LIMITE = 30;
 
 	
-	public Alerta(Statement myStatement) {
+	public AlertaTemperatura(Statement myStatement) {
 		this.myStatement = myStatement;
 		estado = EstadoSistema.ESTAVEL;
 	}
@@ -42,12 +42,12 @@ public class Alerta {
 		}
 		String dataHora = "'" + data + " " + hora + "'";
 		medicao = Double.parseDouble(temperatura);
-		MedicaoTemperatura m = new MedicaoTemperatura(medicao, dataHora);
+		Medicao m = new Medicao(medicao, dataHora);
 		if (buffer.size() < BUFFER_SIZE)
 			buffer.add(m);
 		else {
 			double media = calcularMedia(buffer);
-			MedicaoTemperatura primeiraMedicao = buffer.remove();
+			Medicao primeiraMedicao = buffer.remove();
 			if (primeiraMedicao.getValor() <= media + DESVIO_MEDIA
 					&& primeiraMedicao.getValor() >= media - DESVIO_MEDIA) {
 				adicionarMedicoes(primeiraMedicao);
@@ -63,14 +63,14 @@ public class Alerta {
 
 	}
 
-	public double calcularMedia(LinkedList<MedicaoTemperatura> lista) {
+	public double calcularMedia(LinkedList<Medicao> lista) {
 		double soma = 0;
-		for (MedicaoTemperatura d : lista)
+		for (Medicao d : lista)
 			soma += d.getValor();
 		return soma / lista.size();
 	}
 
-	public void adicionarMedicoes(MedicaoTemperatura m) {
+	public void adicionarMedicoes(Medicao m) {
 		if (medicoes.size() == MEDICOES_SIZE) {
 			medicoes.remove();
 			medicoes.add(m);

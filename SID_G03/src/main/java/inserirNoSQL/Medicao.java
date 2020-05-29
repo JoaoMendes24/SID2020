@@ -1,10 +1,10 @@
 package inserirNoSQL;
 
-public class MedicaoTemperatura {
+public class Medicao {
 	
 	private double valor;
 	private String dataHora;
-	public MedicaoTemperatura(double valor, String dataHora) {
+	public Medicao(double valor, String dataHora) {
 		super();
 		this.valor = valor;
 		this.dataHora = dataHora;
