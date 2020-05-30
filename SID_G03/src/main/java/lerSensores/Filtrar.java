@@ -58,7 +58,7 @@ public class Filtrar {
 		if(isNumeric(jsonRecebido.optString("tmp"))) {tmp = Double.parseDouble(jsonRecebido.optString("tmp"));}
 		if(isNumeric(jsonRecebido.optString("hum"))) {hum = Double.parseDouble(jsonRecebido.optString("hum"));}
 		if(isNumeric(jsonRecebido.optString("mov"))) {mov = Integer.parseInt(jsonRecebido.optString("mov"));}
-		if(isNumeric(jsonRecebido.optString("cell"))) {mov = Integer.parseInt(jsonRecebido.optString("cell"));}
+		if(isNumeric(jsonRecebido.optString("cell"))) {cell = Integer.parseInt(jsonRecebido.optString("cell"));}
 		dat = jsonRecebido.optString("dat");
 		tim = jsonRecebido.optString("tim");
 		sens = jsonRecebido.optString("sens");
@@ -77,6 +77,8 @@ public class Filtrar {
 				
 			}
 			if(!badInfo.isEmpty()) {
+				badInfo.put("dat", dat);
+				badInfo.put("tim", tim);
 				Document bad = Document.parse(badInfo.toString());
 				dumpcol.insertOne(bad);;
 			}
