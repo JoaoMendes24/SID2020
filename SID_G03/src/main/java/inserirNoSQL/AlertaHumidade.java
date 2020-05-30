@@ -99,7 +99,7 @@ public class AlertaHumidade {
 
 	public void enviarAlertaPertoLimite() throws SQLException {
 		if (estado == EstadoSistema.ESTAVEL || estado == EstadoSistema.SUBIDA) {
-				if (medicoes.peekLast().getValor() >= humLimite - 10) {
+				if (!medicoes.isEmpty() && medicoes.peekLast().getValor() >= humLimite - 10) {
 					estado = EstadoSistema.PERTO_LIMITE;
 					myStatement.executeUpdate(
 							"insert into alerta" + " values(0" + "," + medicoes.peekLast().getDataHora() + ",'hum'," + medicoes.peekLast().getValor() + ","
