@@ -91,7 +91,7 @@ public class AlertaTemperatura {
 					myStatement.executeUpdate("insert into alerta" + " values(0" + ","
 							+ medicoes.peekLast().getDataHora() + ",'tmp'," + medicoes.peekLast().getValor() + ","
 							+ tmpLimite + ",'O sistema detetou que " + "houve uma subida da temperatura',"
-							+ estado.getNivel() + ", '" + estado.getTitulo() + "')");
+							+ estado.getNivel() + ", '" + estado.getTituloTmp() + "')");
 					System.out.println("enviou alerta subida");
 				}
 			}
@@ -100,12 +100,12 @@ public class AlertaTemperatura {
 
 	public void enviarAlertaPertoLimite() throws SQLException {
 		if (estado == EstadoSistema.ESTAVEL || estado == EstadoSistema.SUBIDA) {
-				if (medicoes.peekLast().getValor() >= tmpLimite - 10) {
+				if (!medicoes.isEmpty() && medicoes.peekLast().getValor() >= tmpLimite - 10) {
 					estado = EstadoSistema.PERTO_LIMITE;
 					myStatement.executeUpdate(
 							"insert into alerta" + " values(0" + "," + medicoes.peekLast().getDataHora() + ",'tmp'," + medicoes.peekLast().getValor() + ","
 									+ tmpLimite + ",'O sistema detetou que " + "a temperatura está perto do limite',"
-									+ estado.getNivel() + ", '" + estado.getTitulo() + "')");
+									+ estado.getNivel() + ", '" + estado.getTituloTmp() + "')");
 					System.out.println("enviou alerta perto limite");
 				}
 		}				
@@ -120,7 +120,7 @@ public class AlertaTemperatura {
 					myStatement.executeUpdate(
 							"insert into alerta" + " values(0" + "," + medicoes.peekLast().getDataHora() + ",'tmp'," + medicoes.peekLast().getValor() + ","
 									+ tmpLimite + ",'O sistema detetou que " + "a temperatura está acima do limite',"
-									+ estado.getNivel() + ", '" + estado.getTitulo() + "')");
+									+ estado.getNivel() + ", '" + estado.getTituloTmp() + "')");
 					contador=0;
 					System.out.println("enviou alerta acima limite");
 			}
@@ -134,7 +134,7 @@ public class AlertaTemperatura {
 					myStatement.executeUpdate(
 							"insert into alerta" + " values(0" + "," + medicoes.peekLast().getDataHora() + ",'tmp'," + medicoes.peekLast().getValor() + ","
 									+ tmpLimite + ",'O sistema detetou que a temperatura está abaixo mas perto do limite',"
-									+ estado.getNivel() + ", '" + estado.getTitulo() + "')");
+									+ estado.getNivel() + ", '" + estado.getTituloTmp() + "')");
 					contador=0;
 					System.out.println("enviou alerta descida limite dps de tar acima");
 					
@@ -145,7 +145,7 @@ public class AlertaTemperatura {
 					myStatement.executeUpdate(
 							"insert into alerta" + " values(0" + "," + medicoes.peekLast().getDataHora() + ",'tmp'," + medicoes.peekLast().getValor() + ","
 									+ tmpLimite + ",'O sistema detetou que a temperatura voltou ao normal',"
-									+ estado.getNivel() + ", '" + estado.getTitulo() + "')");
+									+ estado.getNivel() + ", '" + estado.getTituloTmp() + "')");
 					contador=0;
 					System.out.println("enviou alerta descida perto limite");
 			}
