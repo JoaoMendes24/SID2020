@@ -88,6 +88,7 @@ public class LerSensores implements MqttCallback {
 	public void messageArrived(String topic, MqttMessage message) throws Exception {
 		String payload = new String(message.getPayload());
 		payload = payload.replaceAll("[^A-Za-z0-9,./:{}\"]", "");
+		System.out.println(payload);
 
 		// limpar os erros dos sensores do professor
 //		payload = limparErros(payload);
