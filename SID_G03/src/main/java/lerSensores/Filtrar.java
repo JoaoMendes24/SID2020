@@ -7,12 +7,13 @@ import com.mongodb.client.MongoCollection;
 
 public class Filtrar {
 	
-	private double tmp;
-	private double hum;
-	private int mov;
-	private int cell;
+	private double tmp = -100;
+	private double hum = -1;
+	private int mov = -1;
+	private int cell = -1;
 	private String dat;
 	private String tim;
+	private String sens;
 	private boolean isValidTmp;
 	private boolean isValidHum;
 	private boolean isValidMov;
@@ -32,20 +33,35 @@ public class Filtrar {
 	}
 	
 	
+	public boolean isNumeric(String strNum) {
+	    if (strNum == null) {
+	        return false;
+	    }
+	    try {
+	        double d = Double.parseDouble(strNum);
+	    } catch (NumberFormatException nfe) {
+	        return false;
+	    }
+	    return true;
+	}
+	
+	
 	
 	public void executar() {
 		preencherDados();
 		validar();
 		escreverDB();
+
 	}
 	
 	public void preencherDados() {
-		tmp = Double.parseDouble(jsonRecebido.optString("tmp"));
-		hum = Double.parseDouble(jsonRecebido.optString("hum"));
-		mov = Integer.parseInt(jsonRecebido.optString("mov"));
-		cell = Integer.parseInt(jsonRecebido.optString("cell"));
+		if(isNumeric(jsonRecebido.optString("tmp"))) {tmp = Double.parseDouble(jsonRecebido.optString("tmp"));}
+		if(isNumeric(jsonRecebido.optString("hum"))) {hum = Double.parseDouble(jsonRecebido.optString("hum"));}
+		if(isNumeric(jsonRecebido.optString("mov"))) {mov = Integer.parseInt(jsonRecebido.optString("mov"));}
+		if(isNumeric(jsonRecebido.optString("cell"))) {mov = Integer.parseInt(jsonRecebido.optString("cell"));}
 		dat = jsonRecebido.optString("dat");
 		tim = jsonRecebido.optString("tim");
+		sens = jsonRecebido.optString("sens");
 	}
 	
 	public void escreverDB() {
@@ -56,12 +72,13 @@ public class Filtrar {
 		else {
 			escreverJsons();
 			if(!goodInfo.isEmpty()) {
-				Document doc = Document.parse(goodInfo.toString());
-				mongocol.insertOne(doc);
+				Document good = Document.parse(goodInfo.toString());
+				mongocol.insertOne(good);
+				
 			}
 			if(!badInfo.isEmpty()) {
-				Document doc = Document.parse(badInfo.toString());
-				dumpcol.insertOne(doc);
+				Document bad = Document.parse(badInfo.toString());
+				dumpcol.insertOne(bad);;
 			}
 		}
 	}
@@ -95,6 +112,7 @@ public class Filtrar {
 		else { badInfo.put("cell", String.valueOf(cell));}
 		goodInfo.put("dat", dat);
 		goodInfo.put("tim", tim);
+		goodInfo.put("sens", sens);
 	}
 	
 

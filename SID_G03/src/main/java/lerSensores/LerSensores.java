@@ -73,19 +73,21 @@ public class LerSensores implements MqttCallback {
 
 	private void getColeccoes() {
 		try {
+			dumpcol = db.getCollection(dump_collection);
 			CreateCollectionOptions options = new CreateCollectionOptions();
 			options.capped(true);
 			options.sizeInBytes(2000000000l);
 			db.createCollection(data_collection, options);
-			dumpcol = db.getCollection(dump_collection);
 			mongocol = db.getCollection(data_collection);
 		} catch (Exception e) {
 			mongocol = db.getCollection(data_collection);
+			dumpcol = db.getCollection(dump_collection);
 		}
 	}
 
 	public void messageArrived(String topic, MqttMessage message) throws Exception {
 		String payload = new String(message.getPayload());
+		payload = payload.replaceAll("[^A-Za-z0-9,./:{}\"]", "");
 
 		// limpar os erros dos sensores do professor
 //		payload = limparErros(payload);
@@ -95,15 +97,7 @@ public class LerSensores implements MqttCallback {
 			Document doc = Document.parse(jsonmsg.toString());
 			Filtrar filtro = new Filtrar(mongocol,dumpcol,jsonmsg);
 			filtro.executar();
-//			System.out.println(doc);
-//			System.out.println(valido(jsonmsg));
-//			if(valido(jsonmsg)) {
-//				mongocol.insertOne(doc);
-//			}
-//			else {
-//				dumpcol.insertOne(doc);
-//			}
-//			System.out.println(doc);
+//			
 		} catch (Exception e) {}
 	}
 	
