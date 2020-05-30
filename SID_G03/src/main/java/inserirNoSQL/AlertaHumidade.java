@@ -90,7 +90,7 @@ public class AlertaHumidade {
 					myStatement.executeUpdate("insert into alerta" + " values(0" + ","
 							+ medicoes.peekLast().getDataHora() + ",'hum'," + medicoes.peekLast().getValor() + ","
 							+ humLimite + ",'O sistema detetou que " + "houve uma subida da humidade',"
-							+ estado.getNivel() + ", '" + estado.getTitulo() + "')");
+							+ estado.getNivel() + ", '" + estado.getTituloHum() + "')");
 					System.out.println("enviou alerta subida");
 				}
 			}
@@ -99,12 +99,12 @@ public class AlertaHumidade {
 
 	public void enviarAlertaPertoLimite() throws SQLException {
 		if (estado == EstadoSistema.ESTAVEL || estado == EstadoSistema.SUBIDA) {
-				if (medicoes.peekLast().getValor() >= humLimite - 10) {
+				if (!medicoes.isEmpty() && medicoes.peekLast().getValor() >= humLimite - 10) {
 					estado = EstadoSistema.PERTO_LIMITE;
 					myStatement.executeUpdate(
 							"insert into alerta" + " values(0" + "," + medicoes.peekLast().getDataHora() + ",'hum'," + medicoes.peekLast().getValor() + ","
 									+ humLimite + ",'O sistema detetou que " + "a humidade está perto do limite',"
-									+ estado.getNivel() + ", '" + estado.getTitulo() + "')");
+									+ estado.getNivel() + ", '" + estado.getTituloHum() + "')");
 					System.out.println("enviou alerta perto limite");
 				}
 		}				
@@ -119,7 +119,7 @@ public class AlertaHumidade {
 					myStatement.executeUpdate(
 							"insert into alerta" + " values(0" + "," + medicoes.peekLast().getDataHora() + ",'hum'," + medicoes.peekLast().getValor() + ","
 									+ humLimite + ",'O sistema detetou que " + "a humidade está acima do limite',"
-									+ estado.getNivel() + ", '" + estado.getTitulo() + "')");
+									+ estado.getNivel() + ", '" + estado.getTituloHum() + "')");
 					contador=0;
 					System.out.println("enviou alerta acima limite");
 			}
@@ -133,7 +133,7 @@ public class AlertaHumidade {
 					myStatement.executeUpdate(
 							"insert into alerta" + " values(0" + "," + medicoes.peekLast().getDataHora() + ",'hum'," + medicoes.peekLast().getValor() + ","
 									+ humLimite + ",'O sistema detetou que a humidade está abaixo mas perto do limite',"
-									+ estado.getNivel() + ", '" + estado.getTitulo() + "')");
+									+ estado.getNivel() + ", '" + estado.getTituloHum() + "')");
 					contador=0;
 					System.out.println("enviou alerta descida limite dps de tar acima");
 					
@@ -144,7 +144,7 @@ public class AlertaHumidade {
 					myStatement.executeUpdate(
 							"insert into alerta" + " values(0" + "," + medicoes.peekLast().getDataHora() + ",'hum'," + medicoes.peekLast().getValor() + ","
 									+ humLimite + ",'O sistema detetou que a humidade voltou ao normal',"
-									+ estado.getNivel() + ", '" + estado.getTitulo() + "')");
+									+ estado.getNivel() + ", '" + estado.getTituloHum() + "')");
 					contador=0;
 					System.out.println("enviou alerta descida perto limite");
 			}
