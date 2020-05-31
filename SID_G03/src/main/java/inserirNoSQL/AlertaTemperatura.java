@@ -17,7 +17,7 @@ public class AlertaTemperatura {
 	private double medicao;
 	private int contador;
 	private double tmpLimite;
-	public static final double DESVIO_MEDIA = 1;
+	public static final double DESVIO_MEDIA = 3;
 	public static final int MEDICOES_SIZE = 10;
 	public static final int BUFFER_SIZE = 5;
 	public static final double DELTA_MEDICOES = 2;
@@ -58,8 +58,8 @@ public class AlertaTemperatura {
 		rs.absolute(1);
 		tmpLimite = rs.getDouble("LimiteTemperatura");
 		enviarAlerta();
-		System.out.println("buffer -> "+buffer);
-		System.out.println("medicoes -> "+medicoes);
+//		System.out.println("buffer -> "+buffer);
+//		System.out.println("medicoes -> "+medicoes);
 
 	}
 
@@ -80,10 +80,10 @@ public class AlertaTemperatura {
 
 	public void enviarAlertaSubidaTemperatura() throws SQLException {
 		if (estado == EstadoSistema.ESTAVEL) {
-			System.out.println("entrei no primeiro if");
+//			System.out.println("entrei no primeiro if");
 			double diferenca_temp = 0;
 			if (medicoes.size() == MEDICOES_SIZE) {
-				System.out.println("entrei no segundo if");
+//				System.out.println("entrei no segundo if");
 				diferenca_temp = medicoes.peekLast().getValor() - medicoes.get(0).getValor();
 				if (diferenca_temp >= DELTA_MEDICOES) {
 					System.out.println("entrei no 3 if");
@@ -92,7 +92,7 @@ public class AlertaTemperatura {
 							+ medicoes.peekLast().getDataHora() + ",'tmp'," + medicoes.peekLast().getValor() + ","
 							+ tmpLimite + ",'O sistema detetou que " + "houve uma subida da temperatura',"
 							+ estado.getNivel() + ", '" + estado.getTituloTmp() + "')");
-					System.out.println("enviou alerta subida");
+//					System.out.println("enviou alerta subida");
 				}
 			}
 		}
@@ -106,7 +106,7 @@ public class AlertaTemperatura {
 							"insert into alerta" + " values(0" + "," + medicoes.peekLast().getDataHora() + ",'tmp'," + medicoes.peekLast().getValor() + ","
 									+ tmpLimite + ",'O sistema detetou que " + "a temperatura está perto do limite',"
 									+ estado.getNivel() + ", '" + estado.getTituloTmp() + "')");
-					System.out.println("enviou alerta perto limite");
+//					System.out.println("enviou alerta perto limite");
 				}
 		}				
 	}
@@ -115,14 +115,14 @@ public class AlertaTemperatura {
 		if(estado == EstadoSistema.ACIMA_LIMITE)
 			contador++;
 		if (estado == EstadoSistema.PERTO_LIMITE || contador==MEDICOES_ACIMA_LIMITE) {
-				if (medicoes.peekLast().getValor() > tmpLimite) {
+				if (medicoes.peekLast().getValor() >= tmpLimite) {
 					estado = EstadoSistema.ACIMA_LIMITE;
 					myStatement.executeUpdate(
 							"insert into alerta" + " values(0" + "," + medicoes.peekLast().getDataHora() + ",'tmp'," + medicoes.peekLast().getValor() + ","
 									+ tmpLimite + ",'O sistema detetou que " + "a temperatura está acima do limite',"
 									+ estado.getNivel() + ", '" + estado.getTituloTmp() + "')");
 					contador=0;
-					System.out.println("enviou alerta acima limite");
+//					System.out.println("enviou alerta acima limite");
 			}
 		}
 	}
@@ -136,7 +136,7 @@ public class AlertaTemperatura {
 									+ tmpLimite + ",'O sistema detetou que a temperatura está abaixo mas perto do limite',"
 									+ estado.getNivel() + ", '" + estado.getTituloTmp() + "')");
 					contador=0;
-					System.out.println("enviou alerta descida limite dps de tar acima");
+//					System.out.println("enviou alerta descida limite dps de tar acima");
 					
 			}
 		if (estado == EstadoSistema.PERTO_LIMITE) {
@@ -147,13 +147,13 @@ public class AlertaTemperatura {
 									+ tmpLimite + ",'O sistema detetou que a temperatura voltou ao normal',"
 									+ estado.getNivel() + ", '" + estado.getTituloTmp() + "')");
 					contador=0;
-					System.out.println("enviou alerta descida perto limite");
+//					System.out.println("enviou alerta descida perto limite");
 			}
 		}
 	}
 
 	public void enviarAlerta() throws SQLException {
-		System.out.println("entrei na funçao enviar alerta");
+//		System.out.println("entrei na funçao enviar alerta");
 		enviarAlertaSubidaTemperatura();
 		enviarAlertaPertoLimite();
 		enviarAlertaAcimaLimite();

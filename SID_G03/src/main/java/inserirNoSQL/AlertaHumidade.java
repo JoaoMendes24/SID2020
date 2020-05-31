@@ -16,7 +16,7 @@ public class AlertaHumidade {
 	private double medicao;
 	private int contador;
 	private double humLimite;
-	public static final double DESVIO_MEDIA = 1;
+	public static final double DESVIO_MEDIA = 3;
 	public static final int MEDICOES_SIZE = 10;
 	public static final int BUFFER_SIZE = 5;
 	public static final double DELTA_MEDICOES = 2;
@@ -57,8 +57,8 @@ public class AlertaHumidade {
 		rs.absolute(1);
 		humLimite = rs.getDouble("LimiteHumidade");
 		enviarAlerta();
-		System.out.println("buffer -> "+buffer);
-		System.out.println("medicoes -> "+medicoes);
+//		System.out.println("buffer -> "+buffer);
+//		System.out.println("medicoes -> "+medicoes);
 
 	}
 
@@ -79,19 +79,19 @@ public class AlertaHumidade {
 
 	public void enviarAlertaSubidaHumidade() throws SQLException {
 		if (estado == EstadoSistema.ESTAVEL) {
-			System.out.println("entrei no primeiro if");
+//			System.out.println("entrei no primeiro if");
 			double diferenca_hum = 0;
 			if (medicoes.size() == MEDICOES_SIZE) {
-				System.out.println("entrei no segundo if");
+//				System.out.println("entrei no segundo if");
 				diferenca_hum = medicoes.peekLast().getValor() - medicoes.get(0).getValor();
 				if (diferenca_hum >= DELTA_MEDICOES) {
-					System.out.println("entrei no 3 if");
+//					System.out.println("entrei no 3 if");
 					estado = EstadoSistema.SUBIDA;
 					myStatement.executeUpdate("insert into alerta" + " values(0" + ","
 							+ medicoes.peekLast().getDataHora() + ",'hum'," + medicoes.peekLast().getValor() + ","
 							+ humLimite + ",'O sistema detetou que " + "houve uma subida da humidade',"
 							+ estado.getNivel() + ", '" + estado.getTituloHum() + "')");
-					System.out.println("enviou alerta subida");
+//					System.out.println("enviou alerta subida");
 				}
 			}
 		}
@@ -105,7 +105,7 @@ public class AlertaHumidade {
 							"insert into alerta" + " values(0" + "," + medicoes.peekLast().getDataHora() + ",'hum'," + medicoes.peekLast().getValor() + ","
 									+ humLimite + ",'O sistema detetou que " + "a humidade está perto do limite',"
 									+ estado.getNivel() + ", '" + estado.getTituloHum() + "')");
-					System.out.println("enviou alerta perto limite");
+//					System.out.println("enviou alerta perto limite");
 				}
 		}				
 	}
@@ -114,14 +114,14 @@ public class AlertaHumidade {
 		if(estado == EstadoSistema.ACIMA_LIMITE)
 			contador++;
 		if (estado == EstadoSistema.PERTO_LIMITE || contador==MEDICOES_ACIMA_LIMITE) {
-				if (medicoes.peekLast().getValor() > humLimite) {
+				if (medicoes.peekLast().getValor() >= humLimite) {
 					estado = EstadoSistema.ACIMA_LIMITE;
 					myStatement.executeUpdate(
 							"insert into alerta" + " values(0" + "," + medicoes.peekLast().getDataHora() + ",'hum'," + medicoes.peekLast().getValor() + ","
 									+ humLimite + ",'O sistema detetou que " + "a humidade está acima do limite',"
 									+ estado.getNivel() + ", '" + estado.getTituloHum() + "')");
 					contador=0;
-					System.out.println("enviou alerta acima limite");
+//					System.out.println("enviou alerta acima limite");
 			}
 		}
 	}
@@ -135,7 +135,7 @@ public class AlertaHumidade {
 									+ humLimite + ",'O sistema detetou que a humidade está abaixo mas perto do limite',"
 									+ estado.getNivel() + ", '" + estado.getTituloHum() + "')");
 					contador=0;
-					System.out.println("enviou alerta descida limite dps de tar acima");
+//					System.out.println("enviou alerta descida limite dps de tar acima");
 					
 			}
 		if (estado == EstadoSistema.PERTO_LIMITE) {
@@ -146,13 +146,13 @@ public class AlertaHumidade {
 									+ humLimite + ",'O sistema detetou que a humidade voltou ao normal',"
 									+ estado.getNivel() + ", '" + estado.getTituloHum() + "')");
 					contador=0;
-					System.out.println("enviou alerta descida perto limite");
+//					System.out.println("enviou alerta descida perto limite");
 			}
 		}
 	}
 
 	public void enviarAlerta() throws SQLException {
-		System.out.println("entrei na funçao enviar alerta");
+//		System.out.println("entrei na funçao enviar alerta");
 		enviarAlertaSubidaHumidade();
 		enviarAlertaPertoLimite();
 		enviarAlertaAcimaLimite();
