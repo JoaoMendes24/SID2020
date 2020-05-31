@@ -2,7 +2,7 @@ package inserirNoSQL;
 
 public enum EstadoSistema {
 	
-	ESTAVEL(0,"Temperatura normal","Humidade normal"),SUBIDA(1,"Subida de temperatura pouco grave","Subida de humidade pouco grave"),
+	ESTAVEL(0,"Temperatura normal","Humidade normal"),SUBIDA(1,"Subida de temperatura","Subida de humidade"),
 	PERTO_LIMITE(2,"Temperatura próxima do limite","Humidade próxima do limite"),ACIMA_LIMITE(3,"Temperatura acima do limite","Humidade acima do limite");
 	
 	private int nivel_alerta;
