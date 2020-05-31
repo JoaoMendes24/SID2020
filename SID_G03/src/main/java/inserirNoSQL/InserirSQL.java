@@ -17,14 +17,13 @@ public class InserirSQL {
 	private Statement myStatement;
 	private AlertaTemperatura alertaTemperatura;
 	private AlertaHumidade alertaHumidade;
-	
 
 	public InserirSQL() {
 		try {
 			myConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/museu2", USERNAME, PASSWORD);
 			myStatement = this.myConnection.createStatement();
-			alertaTemperatura=new AlertaTemperatura(myStatement);
-			alertaHumidade=new AlertaHumidade(myStatement);
+			alertaTemperatura = new AlertaTemperatura(myStatement);
+			alertaHumidade = new AlertaHumidade(myStatement);
 		} catch (Exception e) {
 			System.out.println("Erro InserirSQL");
 			e.printStackTrace();
@@ -56,10 +55,14 @@ public class InserirSQL {
 		}
 
 		String dataHora = "'" + data + " " + hora + "'";
-		inserirMedicaoNoSQL(humidade, "'" + "hum" + "'", dataHora);
-		inserirMedicaoNoSQL(temperatura, "'" + "tmp" + "'", dataHora);
-		inserirMedicaoNoSQL(movimento, "'" + "mov" + "'", dataHora);
-		inserirMedicaoNoSQL(luz, "'" + "luz" + "'", dataHora);
+		if (!humidade.equals(""))
+			inserirMedicaoNoSQL(humidade, "'" + "hum" + "'", dataHora);
+		if (!temperatura.equals(""))
+			inserirMedicaoNoSQL(temperatura, "'" + "tmp" + "'", dataHora);
+		if (!movimento.equals(""))
+			inserirMedicaoNoSQL(movimento, "'" + "mov" + "'", dataHora);
+		if (!luz.equals(""))
+			inserirMedicaoNoSQL(luz, "'" + "luz" + "'", dataHora);
 	}
 
 	public void inserirMedicaoNoSQL(String valor, String tipo, String dataHora) {
